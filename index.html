@@ -8,7 +8,7 @@
         /* 全局样式：电影放映厅般的纯黑 */
         body {
             margin: 0; padding: 0; 
-            background-color: #0b0c0d; /* 改为纯黑/极深墨黑，营造电影院关灯后的氛围 */
+            background-color: #0b0c0d; 
             color: #d1dadc;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, serif;
             letter-spacing: 0.15em; overflow: hidden; height: 100vh;
@@ -20,20 +20,20 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #0b0c0d; z-index: 10; 
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 1.2s ease; /* 幻灯片层整体淡出 */
+            transition: opacity 1.2s ease; 
         }
 
         /* 统一尺寸的电影照片 */
         .slide-img {
             position: absolute; 
-            width: 500px; /* 固定照片宽度 */
-            height: 300px; /* 固定照片高度，锁定 16:9 左右的电影比例 */
-            object-fit: cover; /* 自动裁剪，确保所有图片尺寸绝对一致 */
+            width: 500px; 
+            height: 300px; 
+            object-fit: cover; 
             opacity: 0;
-            transition: opacity 0.6s ease-in-out; /* 切图更利落（从2秒缩短到0.6秒） */
+            transition: opacity 0.6s ease-in-out; 
         }
 
-        /* 2. 极简登录界面（从黑框里浮现） */
+        /* 2. 极简登录界面 */
         #login-screen { 
             max-width: 400px; width: 85%; text-align: left; 
             opacity: 0; transition: opacity 1.5s ease; z-index: 5; 
@@ -61,24 +61,33 @@
         .btn-submit:hover { padding-left: 8px; }
         #error-msg { color: #e06d6d; font-size: 0.85rem; margin-top: 15px; min-height: 20px; }
 
-        /* 3. 游戏核心剧情界面 */
+        /* 3. 游戏核心剧情界面（升级为日系简约疼痛版排版） */
         #game-screen { max-width: 600px; width: 85%; text-align: left; display: none; }
-        .story-content { font-size: 1rem; line-height: 2.2; color: #b0bec5; margin-bottom: 60px; font-weight: 300; }
+        .date-indicator { font-size: 0.8rem; color: #7f8c8d; margin-bottom: 40px; }
+        .story-content { font-size: 1rem; line-height: 2.3; color: #cfd8dc; margin-bottom: 60px; font-weight: 300; }
         .monologue { font-size: 0.9rem; color: #7f8c8d; margin-top: 20px; font-style: italic; }
+        
+        /* 抉择按钮组 */
+        .choices-group { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+        .btn-minimal {
+            background: transparent; border: none; border-bottom: 1px solid #3a4246; 
+            color: #7f8c8d; padding: 5px 0; font-size: 0.9rem; cursor: pointer; 
+            transition: all 0.4s ease; text-align: left; letter-spacing: 0.1em;
+        }
+        .btn-minimal:hover {
+            color: #eceff1; border-bottom-color: #eceff1; padding-left: 8px; 
+        }
     </style>
 </head>
 <body>
 
-    <!-- 第一层：带黑边的电影感闪回开场 -->
     <div id="intro-slideshow">
-        <!-- 依然是4张占位图，尺寸已被强制统一 -->
         <img class="slide-img" src="https://cdn2.ettoday.net/images/3841/e3841631.jpg" >
         <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ2lMXUtHSohvNQjBcLyJuVZBxs0pBqIDx0muB5sAwxnmu59g-8CHTOAI&s=10" >
         <img class="slide-img" src="https://ibighit.com/public/bts/images/bts/discography/hwayangyeonhwa-pt1/concept02-06-m.jpg" >
         <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBiCO8H-Ui5tpV-J60wAZM7tYD-LhRlYwKlhZqLC5_CWY2l64_KzfMa_GK&s=10" >
     </div>
 
-    <!-- 第二层：极简登录界面 -->
     <div id="login-screen">
         <div class="timeline-bar"></div>
         <h1>花样年华</h1>
@@ -97,14 +106,18 @@
         <div id="error-msg"></div>
     </div>
 
-    <!-- 第三层：真正的游戏剧情 -->
     <div id="game-screen">
         <div class="timeline-bar"></div>
-        <div style="font-size: 0.8rem; color: #7f8c8d; margin-bottom: 40px;">April 11, 2016 // 晴</div>
-        <div class="story-content">
+        <div class="date-indicator" id="game-date">April 11, 2016 // 晴</div>
+        
+        <div class="story-content" id="story-text">
             验证成功。你终于切实地切入了这段被诅咒的时间。<br>
             集装箱里的笑声、海边高台上的纵身一跃、风里残留的汽油味……一切都在四月十一日戛然而止。<br>
             <p class="monologue">“如果能把落地的钱捡起来，如果能推开那扇着火的门，我们是不是……就不用走散了？”</p>
+        </div>
+
+        <div class="choices-group" id="choices">
+            <button class="btn-minimal" onclick="goToScene('gas_station')">— 再次按下时间的倒行键，走向那个加油站</button>
         </div>
     </div>
 
@@ -113,22 +126,23 @@
         const CORRECT_USER = "KSJ";
         const CORRECT_PASS = "0000";
 
+        // 后台“记忆本”：记录谁被成功拯救了
+        let gameStatus = {
+            saved_Namjoon: false,
+            saved_Yoongi: false
+        };
+
         // 幻灯片播放逻辑
         const images = document.querySelectorAll('.slide-img');
         let currentIdx = 0;
 
         function showNextSlide() {
-            if (currentIdx > 0) { 
-                images[currentIdx - 1].style.opacity = 0; // 上一张快速淡出
-            }
-            
+            if (currentIdx > 0) { images[currentIdx - 1].style.opacity = 0; }
             if (currentIdx < images.length) {
-                images[currentIdx].style.opacity = 1; // 当前张快速淡入
+                images[currentIdx].style.opacity = 1; 
                 currentIdx++;
-                // 🛠️ 调整时间：从 3.5秒 缩短到了 1.8秒，节奏更紧凑，更有闪回感
                 setTimeout(showNextSlide, 1800); 
             } else {
-                // 播完后，黑屏无缝过渡到登录框
                 const slideshow = document.getElementById('intro-slideshow');
                 slideshow.style.opacity = 0;
                 setTimeout(() => {
@@ -155,8 +169,77 @@
                     const gameScreen = document.getElementById('game-screen');
                     gameScreen.style.display = 'block';
                 }, 1000);
-            } else {
-                errorMsg.innerText = "时空交错，未找到对应的观测记录。";
+            } else { errorMsg.innerText = "时空交错，未找到对应的观测记录。"; }
+        }
+
+        // 🎬 游戏场景剧本驱动引擎
+        function goToScene(sceneName) {
+            const textEl = document.getElementById('story-text');
+            const choicesEl = document.getElementById('choices');
+            const dateEl = document.getElementById('game-date');
+
+            if (sceneName === 'gas_station') {
+                dateEl.innerText = "April 11, 2016 // 夜";
+                textEl.innerHTML = `
+                    刺眼的油站灯光下，粗鲁的顾客将几张纸钞恶狠狠地甩在地上。<br>
+                    那个熟悉的少年（南俊）身体微微一僵，随后缓缓蹲下身子，去捡那些散落在泥泞里的尊严。<br>
+                    引擎在轰鸣，刺耳的喇叭声逼近，成长的痛楚在这几秒钟里无限拉长。
+                    <p class="monologue">“如果不去帮他，他会在今晚因为和客人的冲突而被拘留……这是悲剧连锁的开始。”</p>
+                `;
+                choicesEl.innerHTML = `
+                    <button class="btn-minimal" onclick="goToScene('save_namjoon')">— 穿过刺眼的远光灯，走过去替他捡起地上的纸钞</button>
+                    <button class="btn-minimal" onclick="goToScene('fail_namjoon')">— 握紧方向盘坐在车里，迟疑着错过了这一分钟</button>
+                `;
+            } 
+            else if (sceneName === 'save_namjoon') {
+                gameStatus.saved_Namjoon = true; // ✍️ 后台记下：南俊被救了！
+                textEl.innerHTML = `
+                    你快步走过去，抢在少年的手碰到泥水前，平息了这场即将爆发的冲突。<br>
+                    他抬起头看向你，疲惫的眼睛里闪过一丝错愕，随即变成了一个有些羞涩和感激的淡笑。<br>
+                    第一片碎落的命运被你接住了。但你来不及叙旧，因为时间不会等你。
+                    <p class="monologue">“金南俊 拯救成功。下一个时间刻度，是5月2日闵玧其火光冲天的汽车旅馆……”</p>
+                `;
+                choicesEl.innerHTML = `
+                    <button class="btn-minimal" onclick="goToScene('motel_room')">— 驱车赶往5月2日的深处</button>
+                `;
+            }
+            else if (sceneName === 'fail_namjoon') {
+                textEl.innerHTML = `
+                    警笛声撕裂了黑夜。冲突最终还是爆发了，你眼睁睁看着他被带上了警车。<br>
+                    你手中那张七个人的海边合照，又有一角开始变得焦黑、剥落。<br>
+                    单薄的肩膀终究没能扛过青春的恶意。
+                    <p class="monologue">“你失败了。金南俊陷入泥潭，世界线彻底坍塌。”</p>
+                `;
+                choicesEl.innerHTML = `
+                    <button class="btn-minimal" onclick="goToScene('gas_station')">— 命运不该在这里结束，重新回到 4月11日</button>
+                `;
+            }
+            else if (sceneName === 'motel_room') {
+                dateEl.innerText = "May 02, 2016 // 炽热";
+                
+                // 🛠️ 关键分支判断：利用后台的记忆本
+                if (gameStatus.saved_Namjoon) {
+                    textEl.innerHTML = `
+                        浓烟从紧锁的客房门缝里涌出来。闵玧其把自己锁在里面，任由烈火吞噬一切。<br>
+                        这一次，因为你改变了4月11日，**南俊也陪你来到了这里！**<br>
+                        “玧其在里面！”南俊大喊着，和你有力地撞向那扇坚固的木门！
+                        <p class="monologue">“因为有了兄弟的力量，门锁应声而断……”</p>
+                    `;
+                    choicesEl.innerHTML = `
+                        <button class="btn-minimal" onclick="alert('恭喜你，和南俊一起成功拉出了火海里的玧其！Demo到此结束，敬请期待下一章。')">— 冲进火海，把他从灰烬中拽回来</button>
+                    `;
+                } else {
+                    // 这个分支目前在这个Demo里不会触发（因为没救南俊会直接死循环），但这是留给以后更复杂逻辑的示范
+                    textEl.innerHTML = `
+                        火势太大了，单凭你一个人的力气，根本撞不开这扇沉重的门。<br>
+                        隔着门板，你听不到钢琴声，只有木材碎裂的死寂。<br>
+                        要是有一个可以分担重量的兄弟在身边就好了……
+                        <p class="monologue">“独自一人的拯救是无力的。金玧其 拯救失败。”</p>
+                    `;
+                    choicesEl.innerHTML = `
+                        <button class="btn-minimal" onclick="goToScene('gas_station')">— 再次倒带，回到最初的 4月11日</button>
+                    `;
+                }
             }
         }
     </script>
