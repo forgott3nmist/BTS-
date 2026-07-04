@@ -3,45 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的互动剧情游戏</title>
+    <title>花样年华 // 青春的无声挽歌</title>
     <style>
-        body { font-family: sans-serif; background: #222; color: #fff; padding: 40px; text-align: center; }
-        .box { max-width: 600px; margin: 0 auto; background: #333; padding: 20px; border-radius: 8px; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #0056b3; }
+        /* 全局样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f7; /* 日系冷灰白 */
+            color: #2c3e50;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, serif;
+            letter-spacing: 0.15em;
+            overflow: hidden; /* 防止滚轮乱动破坏电影感 */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 1. 电影感照片幻灯片容器 */
+        #intro-slideshow {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #f4f6f7;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease; /* 幻灯片整体淡出到登录界面 */
+        }
+
+        .slide-img {
+            position: absolute;
+            max-width: 500px; /* 限制照片宽度，像日式画册一样留白 */
+            width: 80%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 极轻的阴影 */
+            opacity: 0;
+            transition: opacity 2s ease-in-out; /* 照片淡入淡出的速度 */
+        }
+
+        /* 2. 极简登录界面（默认隐藏，等电影放完浮现） */
+        #login-screen {
+            max-width: 400px;
+            width: 85%;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 2s ease;
+            z-index: 5;
+        }
+
+        .timeline-bar {
+            width: 30px; height: 1px;
+            background-color: #e06d6d; /* 青春的朱红线 */
+            margin-bottom: 25px;
+        }
+
+        h1 { font-size: 1.8rem; font-weight: 300; color: #1a252f; margin: 0 0 10px 0; }
+        .subtitle { font-size: 0.75rem; color: #bdc3c7; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 50px; }
+
+        /* 极简输入框样式 */
+        .input-group {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-group label {
+            font-size: 0.75rem;
+            color: #95a5a6;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        input {
+            border: none;
+            border-bottom: 1px solid #dcdde1;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 1rem;
+            color: #2c3e50;
+            outline: none;
+            letter-spacing: 0.1em;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-bottom-color: #1a252f;
+        }
+
+        /* 极简按钮 */
+        .btn-submit {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #1a252f;
+            color: #1a252f;
+            padding: 5px 0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn-submit:hover {
+            padding-left: 8px;
+        }
+        #error-msg { color: #e06d6d; font-size: 0.85rem; margin-top: 15px; min-height: 20px; }
+
+        /* 3. 游戏核心剧情界面（默认隐藏） */
+        #game-screen {
+            max-width: 600px;
+            width: 85%;
+            text-align: left;
+            display: none;
+        }
+        .story-content { font-size: 1rem; line-height: 2.2; color: #475669; margin-bottom: 60px; font-weight: 300; }
+        .monologue { font-size: 0.9rem; color: #95a5a6; margin-top: 20px; font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>密室逃脱</h2>
-        <p id="story-text">你醒来在一个昏暗的房间里，面前有一扇紧闭的大门和一个古旧的木箱。</p>
-        <div id="choices">
-            <button onclick="choose('box')">调查木箱</button>
-            <button onclick="choose('door')">尝试推门</button>
+
+    <!-- 第一层：电影感幻灯片开场 -->
+    <div id="intro-slideshow">
+        <!-- 这里我放了4张符合 HYYH 氛围的意象图（铁轨、火、海、夜路） -->
+        <!-- 以后你可以把 src="" 里面的网址换成你从网上找的 BTS 官方高清图链接 -->
+        <img class="slide-img" src="https://images.unsplash.com/photo-1515165504669-42308707444d?w=800" alt="铁轨">
+        <img class="slide-img" src="https://images.unsplash.com/photo-1547841243-eacb14453cd9?w=800" alt="火光">
+        <img class="slide-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="海边">
+        <img class="slide-img" src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=800" alt="深夜公路">
+    </div>
+
+    <!-- 第二层：极简登录界面 -->
+    <div id="login-screen">
+        <div class="timeline-bar"></div>
+        <h1>花样年华</h1>
+        <div class="subtitle">The Most Beautiful Moment in Life</div>
+        
+        <div class="input-group">
+            <label>ID // 观测者账号</label>
+            <input type="text" id="username" placeholder="请输入账号...">
+        </div>
+        <div class="input-group">
+            <label>PASSWORD // 时空密钥</label>
+            <input type="password" id="password" placeholder="请输入密码...">
+        </div>
+        
+        <button class="btn-submit" onclick="checkLogin()">— 尝试锚定时间线</button>
+        <div id="error-msg"></div>
+    </div>
+
+    <!-- 第三层：真正的游戏剧情 -->
+    <div id="game-screen">
+        <div class="timeline-bar"></div>
+        <div style="font-size: 0.8rem; color: #7f8c8d; margin-bottom: 40px;">April 11, 2016 // 晴</div>
+        <div class="story-content">
+            验证成功。你终于切实地切入了这段被诅咒的时间。<br>
+            集装箱里的笑声、海边高台上的纵身一跃、风里残留的汽油味……一切都在四月十一日戛然而止。<br>
+            <p class="monologue">“如果能把落地的钱捡起来，如果能推开那扇着火的门，我们是不是……就不用走散了？”</p>
         </div>
     </div>
 
     <script>
-        // 用来记录逻辑变量：玩家有没有拿到钥匙
-        let hasKey = false;
+        // 🛠️ 【自定义账号密码设置】
+        // 在这里修改你想要的账号和密码！
+        const CORRECT_USER = "army2016"; // 账号
+        const CORRECT_PASS = "savethem"; // 密码
 
-        function choose(choice) {
-            const textEl = document.getElementById('story-text');
-            const choicesEl = document.getElementById('choices');
+        // 幻灯片播放逻辑
+        const images = document.querySelectorAll('.slide-img');
+        let currentIdx = 0;
 
-            if (choice === 'box') {
-                textEl.innerText = "你在木箱里摸索了一阵，找到了一把生锈的铁钥匙！";
-                hasKey = true; // 改变逻辑状态
-                choicesEl.innerHTML = `<button onclick="choose('door')">去开大门</button>`;
-            } 
-            else if (choice === 'door') {
-                if (hasKey) {
-                    textEl.innerText = "你用生锈的铁钥匙插进锁孔……咔哒一声，门开了！你成功逃了出来！【通关】";
-                    choicesEl.innerHTML = `<button onclick="location.reload()">重新玩一次</button>`;
-                } else {
-                    textEl.innerText = "大门牢牢锁着，根本推不动。也许房间里有什么线索？";
-                    choicesEl.innerHTML = `<button onclick="choose('box')">去调查木箱</button>`;
-                }
+        function showNextSlide() {
+            if (currentIdx > 0) {
+                images[currentIdx - 1].style.opacity = 0; // 上一张淡出
+            }
+            
+            if (currentIdx < images.length) {
+                images[currentIdx].style.opacity = 1; // 当前张淡入
+                currentIdx++;
+                setTimeout(showNextSlide, 3500); // 每张照片停留 3.5 秒
+            } else {
+                // 所有照片放完了，整个幻灯片层淡出，显现登录界面
+                const slideshow = document.getElementById('intro-slideshow');
+                slideshow.style.opacity = 0;
+                setTimeout(() => {
+                    slideshow.style.display = 'none';
+                    const loginScreen = document.getElementById('login-screen');
+                    loginScreen.style.opacity = 1; // 登录界面静静浮现
+                }, 1500);
+            }
+        }
+
+        // 网页一加载完，立刻开始播放幻灯片
+        window.onload = function() {
+            showNextSlide();
+        };
+
+        // 登录验证逻辑
+        function checkLogin() {
+            const userIn = document.getElementById('username').value;
+            const passIn = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (userIn === CORRECT_USER && passIn === CORRECT_PASS) {
+                // 登录成功，登录界面淡出
+                const loginScreen = document.getElementById('login-screen');
+                loginScreen.style.opacity = 0;
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    // 显示真正的剧情
+                    const gameScreen = document.getElementById('game-screen');
+                    gameScreen.style.display = 'block';
+                }, 1000);
+            } else {
+                errorMsg.innerText = "时空交错，未找到对应的观测记录。";
             }
         }
     </script>
