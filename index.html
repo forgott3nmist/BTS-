@@ -5,129 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>花样年华 // 青春的无声挽歌</title>
     <style>
-        /* 全局样式 */
+        /* 全局样式：电影放映厅般的纯黑 */
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #f4f6f7; /* 日系冷灰白 */
-            color: #2c3e50;
+            margin: 0; padding: 0; 
+            background-color: #0b0c0d; /* 改为纯黑/极深墨黑，营造电影院关灯后的氛围 */
+            color: #d1dadc;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, serif;
-            letter-spacing: 0.15em;
-            overflow: hidden; /* 防止滚轮乱动破坏电影感 */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            letter-spacing: 0.15em; overflow: hidden; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* 1. 电影感照片幻灯片容器 */
+        /* 1. 电影框幻灯片容器 */
         #intro-slideshow {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #f4f6f7;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1.5s ease; /* 幻灯片整体淡出到登录界面 */
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #0b0c0d; z-index: 10; 
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.2s ease; /* 幻灯片层整体淡出 */
         }
 
+        /* 统一尺寸的电影照片 */
         .slide-img {
-            position: absolute;
-            max-width: 500px; /* 限制照片宽度，像日式画册一样留白 */
-            width: 80%;
-            height: auto;
-            max-height: 70vh;
-            object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 极轻的阴影 */
+            position: absolute; 
+            width: 500px; /* 固定照片宽度 */
+            height: 300px; /* 固定照片高度，锁定 16:9 左右的电影比例 */
+            object-fit: cover; /* 自动裁剪，确保所有图片尺寸绝对一致 */
             opacity: 0;
-            transition: opacity 2s ease-in-out; /* 照片淡入淡出的速度 */
+            transition: opacity 0.6s ease-in-out; /* 切图更利落（从2秒缩短到0.6秒） */
         }
 
-        /* 2. 极简登录界面（默认隐藏，等电影放完浮现） */
-        #login-screen {
-            max-width: 400px;
-            width: 85%;
-            text-align: left;
-            opacity: 0;
-            transition: opacity 2s ease;
-            z-index: 5;
+        /* 2. 极简登录界面（从黑框里浮现） */
+        #login-screen { 
+            max-width: 400px; width: 85%; text-align: left; 
+            opacity: 0; transition: opacity 1.5s ease; z-index: 5; 
         }
+        .timeline-bar { width: 30px; height: 1px; background-color: #e06d6d; margin-bottom: 25px; }
+        h1 { font-size: 1.8rem; font-weight: 300; color: #eceff1; margin: 0 0 10px 0; }
+        .subtitle { font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 50px; }
 
-        .timeline-bar {
-            width: 30px; height: 1px;
-            background-color: #e06d6d; /* 青春的朱红线 */
-            margin-bottom: 25px;
+        /* 输入框样式 */
+        .input-group { margin-bottom: 25px; display: flex; flex-direction: column; }
+        .input-group label { font-size: 0.75rem; color: #7f8c8d; margin-bottom: 8px; text-transform: uppercase; }
+        input { 
+            border: none; border-bottom: 1px solid #3b4246; background: transparent; 
+            padding: 8px 0; font-size: 1rem; color: #eceff1; outline: none; 
+            letter-spacing: 0.1em; transition: border-color 0.3s; 
         }
+        input:focus { border-bottom-color: #eceff1; }
 
-        h1 { font-size: 1.8rem; font-weight: 300; color: #1a252f; margin: 0 0 10px 0; }
-        .subtitle { font-size: 0.75rem; color: #bdc3c7; text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 50px; }
-
-        /* 极简输入框样式 */
-        .input-group {
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
+        /* 按钮 */
+        .btn-submit { 
+            background: transparent; border: none; border-bottom: 1px solid #eceff1; 
+            color: #eceff1; padding: 5px 0; font-size: 0.95rem; cursor: pointer; 
+            margin-top: 20px; transition: all 0.3s; 
         }
-        .input-group label {
-            font-size: 0.75rem;
-            color: #95a5a6;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-        input {
-            border: none;
-            border-bottom: 1px solid #dcdde1;
-            background: transparent;
-            padding: 8px 0;
-            font-size: 1rem;
-            color: #2c3e50;
-            outline: none;
-            letter-spacing: 0.1em;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-bottom-color: #1a252f;
-        }
-
-        /* 极简按钮 */
-        .btn-submit {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid #1a252f;
-            color: #1a252f;
-            padding: 5px 0;
-            font-size: 0.95rem;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-        .btn-submit:hover {
-            padding-left: 8px;
-        }
+        .btn-submit:hover { padding-left: 8px; }
         #error-msg { color: #e06d6d; font-size: 0.85rem; margin-top: 15px; min-height: 20px; }
 
-        /* 3. 游戏核心剧情界面（默认隐藏） */
-        #game-screen {
-            max-width: 600px;
-            width: 85%;
-            text-align: left;
-            display: none;
-        }
-        .story-content { font-size: 1rem; line-height: 2.2; color: #475669; margin-bottom: 60px; font-weight: 300; }
-        .monologue { font-size: 0.9rem; color: #95a5a6; margin-top: 20px; font-style: italic; }
+        /* 3. 游戏核心剧情界面 */
+        #game-screen { max-width: 600px; width: 85%; text-align: left; display: none; }
+        .story-content { font-size: 1rem; line-height: 2.2; color: #b0bec5; margin-bottom: 60px; font-weight: 300; }
+        .monologue { font-size: 0.9rem; color: #7f8c8d; margin-top: 20px; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <!-- 第一层：电影感幻灯片开场 -->
+    <!-- 第一层：带黑边的电影感闪回开场 -->
     <div id="intro-slideshow">
-        <!-- 这里我放了4张符合 HYYH 氛围的意象图（铁轨、火、海、夜路） -->
-        <!-- 以后你可以把 src="" 里面的网址换成你从网上找的 BTS 官方高清图链接 -->
-        <img class="slide-img" src="https://cdn2.ettoday.net/images/3841/d3841631.jpg">
+        <!-- 依然是4张占位图，尺寸已被强制统一 -->
         <img class="slide-img" src="https://cdn2.ettoday.net/images/3841/e3841631.jpg" >
-        <img class="slide-img" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="海边">
-        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0c4PjyaIlHOh4PCWIgDyLkYXz9L-QsskPtapiXOopTi_uItwn79TuM_ZY&s=10" alt="深夜公路">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ2lMXUtHSohvNQjBcLyJuVZBxs0pBqIDx0muB5sAwxnmu59g-8CHTOAI&s=10" >
+        <img class="slide-img" src="https://ibighit.com/public/bts/images/bts/discography/hwayangyeonhwa-pt1/concept02-06-m.jpg" >
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBiCO8H-Ui5tpV-J60wAZM7tYD-LhRlYwKlhZqLC5_CWY2l64_KzfMa_GK&s=10" >
     </div>
 
     <!-- 第二层：极简登录界面 -->
@@ -161,40 +109,37 @@
     </div>
 
     <script>
-        // 🛠️ 【自定义账号密码设置】
-        // 在这里修改你想要的账号和密码！
-        const CORRECT_USER = "KimSeokjin"; // 账号
-        const CORRECT_PASS = "0000"; // 密码
+        // 自定义账号密码
+        const CORRECT_USER = "KSJ";
+        const CORRECT_PASS = "0000";
 
         // 幻灯片播放逻辑
         const images = document.querySelectorAll('.slide-img');
         let currentIdx = 0;
 
         function showNextSlide() {
-            if (currentIdx > 0) {
-                images[currentIdx - 1].style.opacity = 0; // 上一张淡出
+            if (currentIdx > 0) { 
+                images[currentIdx - 1].style.opacity = 0; // 上一张快速淡出
             }
             
             if (currentIdx < images.length) {
-                images[currentIdx].style.opacity = 1; // 当前张淡入
+                images[currentIdx].style.opacity = 1; // 当前张快速淡入
                 currentIdx++;
-                setTimeout(showNextSlide, 3500); // 每张照片停留 3.5 秒
+                // 🛠️ 调整时间：从 3.5秒 缩短到了 1.8秒，节奏更紧凑，更有闪回感
+                setTimeout(showNextSlide, 1800); 
             } else {
-                // 所有照片放完了，整个幻灯片层淡出，显现登录界面
+                // 播完后，黑屏无缝过渡到登录框
                 const slideshow = document.getElementById('intro-slideshow');
                 slideshow.style.opacity = 0;
                 setTimeout(() => {
                     slideshow.style.display = 'none';
                     const loginScreen = document.getElementById('login-screen');
-                    loginScreen.style.opacity = 1; // 登录界面静静浮现
-                }, 1500);
+                    loginScreen.style.opacity = 1;
+                }, 1000);
             }
         }
 
-        // 网页一加载完，立刻开始播放幻灯片
-        window.onload = function() {
-            showNextSlide();
-        };
+        window.onload = function() { showNextSlide(); };
 
         // 登录验证逻辑
         function checkLogin() {
@@ -203,12 +148,10 @@
             const errorMsg = document.getElementById('error-msg');
 
             if (userIn === CORRECT_USER && passIn === CORRECT_PASS) {
-                // 登录成功，登录界面淡出
                 const loginScreen = document.getElementById('login-screen');
                 loginScreen.style.opacity = 0;
                 setTimeout(() => {
                     loginScreen.style.display = 'none';
-                    // 显示真正的剧情
                     const gameScreen = document.getElementById('game-screen');
                     gameScreen.style.display = 'block';
                 }, 1000);
