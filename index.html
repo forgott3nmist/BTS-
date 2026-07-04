@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的互动剧情游戏</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #fff; padding: 40px; text-align: center; }
+        .box { max-width: 600px; margin: 0 auto; background: #333; padding: 20px; border-radius: 8px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 10px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>密室逃脱</h2>
+        <p id="story-text">你醒来在一个昏暗的房间里，面前有一扇紧闭的大门和一个古旧的木箱。</p>
+        <div id="choices">
+            <button onclick="choose('box')">调查木箱</button>
+            <button onclick="choose('door')">尝试推门</button>
+        </div>
+    </div>
+
+    <script>
+        // 用来记录逻辑变量：玩家有没有拿到钥匙
+        let hasKey = false;
+
+        function choose(choice) {
+            const textEl = document.getElementById('story-text');
+            const choicesEl = document.getElementById('choices');
+
+            if (choice === 'box') {
+                textEl.innerText = "你在木箱里摸索了一阵，找到了一把生锈的铁钥匙！";
+                hasKey = true; // 改变逻辑状态
+                choicesEl.innerHTML = `<button onclick="choose('door')">去开大门</button>`;
+            } 
+            else if (choice === 'door') {
+                if (hasKey) {
+                    textEl.innerText = "你用生锈的铁钥匙插进锁孔……咔哒一声，门开了！你成功逃了出来！【通关】";
+                    choicesEl.innerHTML = `<button onclick="location.reload()">重新玩一次</button>`;
+                } else {
+                    textEl.innerText = "大门牢牢锁着，根本推不动。也许房间里有什么线索？";
+                    choicesEl.innerHTML = `<button onclick="choose('box')">去调查木箱</button>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
